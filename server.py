@@ -110,4 +110,4 @@ if __name__ == "__main__":
     print("🚀 薇拉的德州撲克伺服器啟動中...")
     # 自動偵測 Render 的 Port，偵測不到就預設用 8080
     port = int(os.getenv("PORT", 8080))
-    uvicorn.run("server:app", host="0.0.0.0", port=port)~
+    uvicorn.run("server:app", host="0.0.0.0", port=port)
