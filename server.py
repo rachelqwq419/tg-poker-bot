@@ -9,6 +9,7 @@ import httpx
 from dotenv import load_dotenv
 from typing import Optional
 import asyncio
+from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler
 
 # 讀取保險箱裡的密碼
 load_dotenv()
@@ -18,6 +19,24 @@ COIN_API_URL = os.getenv("COIN_API_URL", "https://telegram-bot.luyiqi-lili.worke
 BOT_WALLET_ID = os.getenv("BOT_WALLET_ID") # 記得在 .env 補上機器人的錢包 ID
 
 app = FastAPI()
+
+# 在 app = FastAPI() 下方加入一個啟動 Bot 的函數
+async def run_bot():
+    token = os.getenv("TELEGRAM_TOKEN")
+    # 從 main.py 搬過來的邏輯
+    app_bot = ApplicationBuilder().token(token).build()
+    
+    # 註冊指令 (記得補上妳原本 main.py 裡的 poker_cmd 等函數)
+    # app_bot.add_handler(...)
+    
+    await app_bot.initialize()
+    await app_bot.start()
+    await app_bot.updater.start_polling()
+
+# 在 if __name__ == "__main__": 的啟動邏輯中加入
+@app.on_event("startup")
+async def startup_event():
+    asyncio.create_task(run_bot())
 
 # 允許跨域請求
 app.add_middleware(
